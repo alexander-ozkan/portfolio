@@ -134,7 +134,7 @@ sector_counts.plot.pie(autopct='%.0f%%')
 
 
 
-<img src="output_8_1.png">
+![](/images/output_8_1.png)
 
 I've normalised the values and we can see that consumer discretionary based companies are leading (at the time of this data), with 16% of the S&P 500 being companies in that sector.
 
@@ -627,7 +627,7 @@ output = bt.run()
 bt.plot()
 ```
 
-<img src="BAPlot.png">
+![](/images/BAPlot.png)
 
 
 
