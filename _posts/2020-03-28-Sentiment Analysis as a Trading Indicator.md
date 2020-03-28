@@ -2,8 +2,6 @@
 layout: post
 title: Sentiment Analysis as a Trading Indicator
 ---
-
-# Sentiment Analysis as a Trading Indicator
 #### Exploring the news as an indicator for trends in the stock market
 
 I'd like to preface this by saying that _I do not have a finance background in any form_ and this is simply an exploratory look.
@@ -136,8 +134,7 @@ sector_counts.plot.pie(autopct='%.0f%%')
 
 
 
-![png](output_8_1.png)
-
+<img src="output_8_1.png">
 
 I've normalised the values and we can see that consumer discretionary based companies are leading (at the time of this data), with 16% of the S&P 500 being companies in that sector.
 
@@ -630,7 +627,7 @@ output = bt.run()
 bt.plot()
 ```
 
-   ![png](BAPlot.png)
+<img src="BAPlot.png">
 
 
 
