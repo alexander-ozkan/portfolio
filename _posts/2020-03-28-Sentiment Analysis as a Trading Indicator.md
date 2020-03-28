@@ -701,7 +701,7 @@ I've ran similar backtests on Amazon (AMZN), Google (GOOG), CVS Health (CVS), an
 * __CVS Return: 7.32%__ (Buy & Hold (Short) return of 8.93%)
 * __GE Return: 17.30%__ (Buy & Hold (Short) return of 27.56%)
 
-Overall it seems to be able to make a profit during this period (__profiting in 4 of its 5 chosen stocks__), but fails to beat the return of simpling shorting or going long on the selected stocks. 
+Overall it seems to be able to make a profit during this period (__profiting in 4 of its 5 chosen stocks__), but fails to beat the return of simply shorting or going long on the selected stocks. 
 
 __However, you could argue that it is a "safer" method of trading in the current market volatility.__
 
