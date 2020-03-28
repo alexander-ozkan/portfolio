@@ -710,6 +710,7 @@ There's many ways to improve on this:
 * The backtest was during one of the most volatile markets we've had in many months/years
 * The backtest was a very small period in length
 * VADER is optimized for the sentiment of Tweets, not financial news headlines
+* News is generally lagging with respect to the price, and __markets may not always respond to the news how we think they might__
 
 Ideally I'd like to have access to more news, and certainly consider training something like a Naïve Bayes model for my sentiment determiner. 
 
