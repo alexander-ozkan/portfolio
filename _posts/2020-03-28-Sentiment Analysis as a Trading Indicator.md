@@ -479,7 +479,7 @@ def determineSentiment(title):
         return 'Negative'
 ```
 
-### Now let's pass in some titles and see how it classifies them:
+Now let's pass in some titles and see how it classifies them:
 
 
 ```python
@@ -501,8 +501,8 @@ print("Title: \"{}\" has sentiment: {} \n".format(negative_title, determineSenti
     
 
 
-__As you can see from the three above examples, it is capable of identifying particularly clear sentiment.
-However, it isn't too good with the nuances of financial language as it is not context aware:__
+As you can see from the three above examples, it is capable of identifying particularly clear sentiment.
+However, it isn't too good with the nuances of financial language as it is not context aware:
 
 
 ```python
@@ -513,7 +513,7 @@ print("Title: \"{}\" has sentiment: {}".format(unclear_title, determineSentiment
     Title: "The Gap Inc. (GPS): These Hedge Funds Caught Flat-Footed" has sentiment: Neutral
 
 
-### Now let's modify our sentiment analysis function to begin checking batches of news:
+Now let's modify our sentiment analysis function to begin checking batches of news:
 
 
 ```python
@@ -536,7 +536,7 @@ def determineSentiment(title):
     return results[0]['compound']
 ```
 
-__And let's create a function to compile the sentiment of all news for a given ticker:__
+And let's create a function to compile the sentiment of all news for a given ticker:
 
 
 ```python
@@ -705,12 +705,15 @@ Overall it seems to be able to make a profit during this period (__profiting in 
 
 __However, you could argue that it is a "safer" method of trading in the current market volatility.__
 
-There's many ways to improve on this:
+A few things I'd like to highlight:
 
 * The backtest was during one of the most volatile markets we've had in many months/years
 * The backtest was a very small period in length
+* The backtest shorts on _neutral_ news too. This could be overfitting as we know the market was in decline, how would this perform in a bull market?
 * VADER is optimized for the sentiment of Tweets, not financial news headlines
 * News is generally lagging with respect to the price, and __markets may not always respond to the news how we think they might__
+
+There's many ways to improve on this:
 
 Ideally I'd like to have access to more news, and certainly consider training something like a Naïve Bayes model for my sentiment determiner. 
 
