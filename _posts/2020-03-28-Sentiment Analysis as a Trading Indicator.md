@@ -19,7 +19,6 @@ Let's begin by getting some of the imports we need:
 ```python
 import pandas as pd
 import matplotlib.pyplot as plt
-from datetime import datetime
 ```
 
 The S&P data is in a .csv file, so we can import it and take a look using Pandas quite easily:
@@ -31,7 +30,7 @@ print(sp.shape)
 sp.head(5)
 ```
 
-    (492, 3)
+    (489, 3)
 
 
 
@@ -106,35 +105,37 @@ Let's see what sectors comprise the S&P:
 print(sp['Sector'].value_counts(normalize=True))
 ```
 
-    Consumer Discretionary        0.162602
-    Information Technology        0.144309
-    Financials                    0.138211
-    Industrials                   0.134146
-    Health Care                   0.121951
-    Consumer Staples              0.065041
-    Real Estate                   0.065041
-    Utilities                     0.056911
-    Energy                        0.056911
-    Materials                     0.048780
-    Telecommunication Services    0.006098
+    Consumer Discretionary        0.163599
+    Information Technology        0.141104
+    Financials                    0.139059
+    Industrials                   0.134969
+    Health Care                   0.122699
+    Real Estate                   0.065440
+    Consumer Staples              0.065440
+    Utilities                     0.057260
+    Energy                        0.057260
+    Materials                     0.047035
+    Telecommunication Services    0.006135
     Name: Sector, dtype: float64
 
 
 
 ```python
 sector_counts = pd.value_counts(sp['Sector'].values, sort=True)
-sector_counts.plot.pie(autopct='%.0f%%')
+sector_pie = sector_counts.plot.pie(autopct='%.0f%%')
+sector_pie.set_ylabel('')
 ```
 
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x7fac57fe2bd0>
+    Text(0, 0.5, '')
 
 
 
 
-![](/images/output_8_1.png)
+![png](/images/output_8_1.png)
+
 
 I've normalised the values and we can see that consumer discretionary based companies are leading (at the time of this data), with 16% of the S&P 500 being companies in that sector.
 
@@ -468,18 +469,18 @@ def determineSentiment(title):
     pol_score['news_text'] = title
     results.append(pol_score)
 
-    ## Check the compound result of the analysis,
-    ## the tolerances have been manually skewed to negative by me
+    ## Check the compound result of the analysis
+    ## Tolerances are near mirrors of those used in academia (though more sensitive to negativity)
     compound = results[0]['compound']
     if compound >= 0.05:
         return 'Positive'
-    elif compound >= 0.00 and compound < 0.05:
+    elif compound >= -0.02 and compound < 0.05:
         return 'Neutral'
-    elif compound < -0.00:
+    elif compound < -0.02:
         return 'Negative'
 ```
 
-### Now let's pass in some titles and see how it classifies them:
+Now let's pass in some titles and see how it classifies them:
 
 
 ```python
@@ -501,8 +502,8 @@ print("Title: \"{}\" has sentiment: {} \n".format(negative_title, determineSenti
     
 
 
-__As you can see from the three above examples, it is capable of identifying particularly clear sentiment.
-However, it isn't too good with the nuances of financial language as it is not context aware:__
+As you can see from the three above examples, it is capable of identifying particularly clear sentiment.
+However, it isn't too good with the nuances of financial language as it is not context aware:
 
 
 ```python
@@ -513,7 +514,7 @@ print("Title: \"{}\" has sentiment: {}".format(unclear_title, determineSentiment
     Title: "The Gap Inc. (GPS): These Hedge Funds Caught Flat-Footed" has sentiment: Neutral
 
 
-### Now let's modify our sentiment analysis function to begin checking batches of news:
+Now let's modify our sentiment analysis function to begin checking batches of news:
 
 
 ```python
@@ -536,7 +537,7 @@ def determineSentiment(title):
     return results[0]['compound']
 ```
 
-__And let's create a function to compile the sentiment of all news for a given ticker:__
+And let's create a function to compile the sentiment of all news for a given ticker:
 
 
 ```python
@@ -551,6 +552,7 @@ def generateSentimentDict(ticker):
     for article in articles:
         sentiment = determineSentiment(article)
         
+        #if sentiment >= 0.05 or sentiment <= -0.05:
         # Determine the date that the article was published on
         row_with_date = news_info.loc[news_info['title'] == article]
         date = row_with_date['date'][0]
@@ -564,16 +566,8 @@ def generateSentimentDict(ticker):
     return daily_sentiment
 ```
 
-## Defining and Backtesting the Strategy
-Our initial strategy will be simple and non-robust:
-
-1. If the news of the _day_ is positive: go long
-2. If the news of the _day_ is negative: go short
-3. If the news of the _day_ is neutral: go short
-
-Due to the constraints of our news source, we can only do a _very_ short backtest of ~30 days.
-
-It's worth noting that any trade is executed on the next candle's open as opposed to the current candle's close. This is to prevent any accidental trading on information that shouldn't yet be visible.
+## Investigating the Trends
+Now it's time to gather all of our combined data and begin to plot and investigate things further.
 
 First let's generate a dictionary of the news sentiment for the last month in regards to the Boeing Company (BA):
 
@@ -586,129 +580,132 @@ print(boeing_sentiment)
     {'2020-03-10': 0.5574, '2020-03-17': -0.3182, '2020-03-23': -1.0513, '2020-03-11': 0.5994, '2020-03-06': 0.0, '2020-03-12': -0.296, '2020-03-18': -0.6249, '2020-03-21': 0.6597, '2020-03-03': 0.296, '2020-03-20': 0.296, '2020-03-15': 0.0, '2020-03-16': 0.0, '2020-03-24': 0.0, '2020-03-04': -0.0258, '2020-03-05': 0.0, '2020-03-26': 0.34, '2020-03-25': 0.1796, '2020-02-27': 0.0}
 
 
-We'll be using the above data in our backtest below:
+We can now plot the sentiment as a time series:
 
 
 ```python
-from backtesting import Backtest, Strategy
+# Sort items from dict in ascending time and plot
+date,sentiment = zip(*sorted(boeing_sentiment.items()))
+plt.xticks(rotation=45)
+plt.plot(date,sentiment)
+```
+
+
+
+
+    [<matplotlib.lines.Line2D at 0x7f73eb37d7d0>]
+
+
+
+
+![png](/images/output_34_1.png)
+
+
+Let's plot Boeing's share price:
+
+
+```python
 from datetime import datetime
 
-class SentimentStrategy(Strategy):
-    daily_sentiment = {'2020-03-10': 0.5574, '2020-03-17': -0.3182, '2020-03-23': -1.0513, '2020-03-11': 0.5994, '2020-03-06': 0.0, '2020-03-12': -0.296, '2020-03-18': -0.6249, '2020-03-21': 0.6597, '2020-03-03': 0.296, '2020-03-20': 0.296, '2020-03-15': 0.0, '2020-03-16': 0.0, '2020-03-24': 0.0, '2020-03-04': -0.0258, '2020-03-05': 0.0, '2020-03-26': 0.34, '2020-03-25': 0.1796, '2020-02-27': 0.0}
-    
-    def init(self):
-        self.day_sentiment = daily_sentiment.get(datetime.today().strftime('%Y-%m-%d'), 0.00)
-
-    def next(self):
-        if self.day_sentiment >= 0.05:
-            self.buy()
-        elif self.day_sentiment >= 0.00 and self.day_sentiment < 0.05:
-            self.sell()
-        elif self.day_sentiment < -0.00:
-            self.sell()
-
 # Pull in our 20 day pricing information earlier compiled
-conn = sqlite3.connect('equities.db')
-stock_info = pd.read_sql_query("SELECT * FROM equities_daily", conn)
+stock_info = pd.read_sql_query("SELECT date, close FROM equities_daily WHERE ticker == 'BA'", eq_db)
 
-# Convert the date to the datetime format for backtesting.py compatibility
+# Convert the date to the datetime format for plotting
 stock_info['date'] = pd.to_datetime(stock_info['date'], format="%Y/%m/%d")
-stock_info = stock_info.set_index('date')
 
-# Rename columns for backtesting.py compatibility
-stock_info.rename(columns={'open': 'Open', 'close': 'Close', 'high': 'High', 'low': 'Low', 'volume': 'Volume'}, inplace=True)
-
-# Initialize the backtest with the stock data and a tradable balance of 100,000
-# as well as a commission of 2% per trade to imitate broker's fees
-BA = stock_info.loc[stock_info['ticker'] == 'BA']
-bt = Backtest(BA, SentimentStrategy, cash=100000, commission=.002)
-
-output = bt.run()
-bt.plot()
+date = stock_info['date']
+price = stock_info['close']
+plt.xticks(rotation=45)
+plt.plot(date, price, color='red')
 ```
 
-![](/images/BAPlot.png)
+
+
+
+    [<matplotlib.lines.Line2D at 0x7f73eb228710>]
 
 
 
 
+![png](/images/output_36_1.png)
 
 
-
-
-
-
-<div class="bk-root" id="7a5eade3-1021-4ca9-a599-e920a06eadd8" data-root-id="35801"></div>
-
-
-
-
-
-As you can see above, we closed with a portfolio value of 107% (107,000). The strategy peaked at a 238% portfolio value but then lost most of its gains in the final few days.
-
-# Analysis
-
-Let's get a more detailed text output:
+Now let's overlay the two time series:
 
 
 ```python
-print(output)
+# Pull in our 20 day pricing information earlier compiled
+date = stock_info['date']
+date = date.iloc[1:]
+price = stock_info['close']
+price = price.iloc[1:]
+
+# Convert sentiment from unordered dict to datetime ordered dataframe
+sentiment_df = pd.DataFrame(boeing_sentiment.items(), columns=['date', 'sentiment'])
+sentiment_df = sentiment_df.sort_values(by='date', ascending=False)
+sentiment = sent_pd['sentiment']
+
+fig, ax1 = plt.subplots()
+
+color = 'tab:red'
+ax1.set_xlabel('Date')
+ax1.set_ylabel('Share Price', color=color)
+ax1.plot(date, price, color=color)
+ax1.tick_params(axis='y', labelcolor=color)
+ax1.tick_params(axis='x', labelrotation=45)
+
+ax2 = ax1.twinx()
+
+color = 'tab:blue'
+ax2.set_ylabel('News Sentiment', color=color)
+ax2.plot(date, sentiment, color=color)
+ax2.tick_params(axis='y', labelcolor=color)
+
+fig.tight_layout()
+plt.show()
 ```
 
-    Start                     2020-03-02 00:00:00
-    End                       2020-03-26 00:00:00
-    Duration                     24 days 00:00:00
-    Exposure [%]                          91.6667
-    Equity Final [$]                       107494
-    Equity Peak [$]                        237912
-    Return [%]                            7.49384
-    Buy & Hold Return [%]                 37.5843
-    Max. Drawdown [%]                    -54.8178
-    Avg. Drawdown [%]                    -16.9545
-    Max. Drawdown Duration        6 days 00:00:00
-    Avg. Drawdown Duration        4 days 00:00:00
-    # Trades                                   16
-    Win Rate [%]                            68.75
-    Best Trade [%]                        24.1394
-    Worst Trade [%]                      -27.3482
-    Avg. Trade [%]                        1.21602
-    Max. Trade Duration           3 days 00:00:00
-    Avg. Trade Duration           2 days 00:00:00
-    Expectancy [%]                        10.6519
-    SQN                                  0.128186
-    Sharpe Ratio                        0.0836319
-    Sortino Ratio                        0.106932
-    Calmar Ratio                         0.022183
-    _strategy                   SentimentStrategy
-    dtype: object
+
+![png](/images/output_38_0.png)
 
 
-Straight away the backtesting framework uses _all available capital_ on each trade, thus our exposure was an eye watering 91.66%.
+Interestingly, there seems to be a common trend between the two data sets.
 
-So we can see are average __win rate was 68.75%__, with an __average trade gaining 1.21%__.
-'Buy & Hold Return \[%\]' is assuming either holding long _or_ short. In this case it would have been a far better return to simply short Boeing's stock.
+However, there seems to be a strange spike in sentiment between 2020-03-17 and 2020-03-21.
+
+After delving into the sentiment values generated in the dictionary above we can see that on 2020-03-21 the sentiment was 0.6597 and on 2020-03-20 it was 0.296.
+
+Let's find those titles:
 
 
-The Sharpe ratio also reads quite poorly on this strategy.
+```python
+news_info_ba = news_info.loc['BA']
+print(news_info_ba.loc[news_info_ba['date'] == '2020-03-20']['title'][0])
+print(news_info_ba.loc[news_info_ba['date'] == '2020-03-21']['title'][0])
+```
 
+    Boeing halts dividend, share buyback program amid coronavirus pandemic - MarketWatch
+    Outside the Box: Coronavirus bailouts are coming: Here’s the smart way to help businesses and workers
+
+
+_"Boeing halts dividend, share buyback program amid coronavirus pandemic - MarketWatch"_
+* This is questionable in sentiment, although marked as strongly positive. In reality I'd argue this is negative as a halting of dividends indicates a poor cash situation.
+
+_"Outside the Box: Coronavirus bailouts are coming: Here’s the smart way to help businesses and workers"_
+* This seems like an opinion piece, and after further investigation it is. It's a positive sentiment but not clearly relevant. 
 
 
 # Conclusion
-I've ran similar backtests on Amazon (AMZN), Google (GOOG), CVS Health (CVS), and General Electric (GE) with the results as follows:
 
-* __AMZN Return: -7.31%__ (Buy & Hold return of 0.07%)
-* __GOOG Return: 8.91%__ (Buy & Hold (Short) return of 16.36%)
-* __CVS Return: 7.32%__ (Buy & Hold (Short) return of 8.93%)
-* __GE Return: 17.30%__ (Buy & Hold (Short) return of 27.56%)
+It would seem that there is indeed use in analysing news as a trading indicator. However I do not think it should be the only factor when considering a trade.
 
-Overall it seems to be able to make a profit during this period (__profiting in 4 of its 5 chosen stocks__), but fails to beat the return of simply shorting or going long on the selected stocks. 
+If those two articles were removed from the dataset we'd end up with a nearly perfect overlap of our lines. However manually intervening would be a poor choice as it would be impractical in a production system. This problem should really be fixed by using a better sentiment analysis method.
 
-__However, you could argue that it is a "safer" method of trading in the current market volatility.__
 
 There's many ways to improve on this:
 
-* The backtest was during one of the most volatile markets we've had in many months/years
-* The backtest was a very small period in length
+* The analysis was during one of the most volatile markets we've had in many months/years
+* The analysis was a very small period in length (~ one month)
 * VADER is optimized for the sentiment of Tweets, not financial news headlines
 * News is generally lagging with respect to the price, and __markets may not always respond to the news how we think they might__
 
@@ -719,3 +716,8 @@ To train such a model would require a considerable amount of __labeled__ data, w
 As well as that, I think this strategy could work if paired with other signals to determine a longer term sentiment. Perhaps a modified turtle strategy that uses news as one of its' indicators, only trading when the sentiment is positive for multiple consecutive days (or vice versa).
 
 __Thanks for reading!__
+
+
+```python
+
+```
