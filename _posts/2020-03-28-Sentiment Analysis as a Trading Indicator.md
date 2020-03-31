@@ -586,6 +586,8 @@ We can now plot the sentiment as a time series:
 ```python
 # Sort items from dict in ascending time and plot
 date,sentiment = zip(*sorted(boeing_sentiment.items()))
+plt.xlabel('Date')
+plt.ylabel('Sentiment Score')
 plt.xticks(rotation=45)
 plt.plot(date,sentiment)
 ```
@@ -615,6 +617,8 @@ stock_info['date'] = pd.to_datetime(stock_info['date'], format="%Y/%m/%d")
 
 date = stock_info['date']
 price = stock_info['close']
+plt.xlabel('Date')
+plt.ylabel('Share Price')
 plt.xticks(rotation=45)
 plt.plot(date, price, color='red')
 ```
