@@ -51,7 +51,7 @@ sp.head(5)
     }
 </style>
 <font size="2">
-<table border="1" class="dataframe">
+<table border="1" class="dataframe" width=100%>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -200,7 +200,7 @@ stock_info.head(5)
     }
 </style>
 <font size="2">
-<table border="1" class="dataframe">
+<table border="1" class="dataframe" width=100%>
   <thead>
     <tr style="text-align: right;">
       <th></th>
@@ -310,7 +310,7 @@ news_info.head(5)
     }
 </style>
 <font size="2">
-<table border="1" class="dataframe">
+<table border="1" class="dataframe" width=100%>
   <thead>
     <tr style="text-align: right;">
       <th></th>
