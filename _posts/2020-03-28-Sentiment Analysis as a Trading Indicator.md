@@ -50,7 +50,7 @@ sp.head(5)
         text-align: right;
     }
 </style>
-<font size="8">
+<font size="2">
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -199,7 +199,7 @@ stock_info.head(5)
         text-align: right;
     }
 </style>
-<font size="8">
+<font size="2">
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -309,7 +309,7 @@ news_info.head(5)
         text-align: right;
     }
 </style>
-<font size="8">
+<font size="2">
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
