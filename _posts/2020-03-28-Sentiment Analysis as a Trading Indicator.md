@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Sentiment Analysis as a Trading Indicator
+redirect_from: "/stocks"
 ---
 #### Exploring the news as an indicator for trends in the stock market
 
