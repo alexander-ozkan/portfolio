@@ -724,6 +724,6 @@ Ideally I'd like to have access to more news, and certainly consider training so
 
 To train such a model would require a considerable amount of __labeled__ data, which would have taken a long time to compile and hand label.
 
-As well as that, I think this strategy could work if paired with other signals to determine a longer term sentiment. Perhaps a modified turtle strategy that uses news as one of its' indicators, only trading when the sentiment is positive for multiple consecutive days (or vice versa).
+As well as that, I think this strategy could work if paired with other signals to determine a longer term sentiment. Perhaps a modified turtle strategy that uses news as one of its indicators, only trading when the sentiment is positive for multiple consecutive days (or vice versa).
 
 __Thanks for reading!__
