@@ -3,8 +3,6 @@ layout: post
 title: Applying Machine Learning Techniques to Sentiment Analysis
 ---
 
-*Disclaimer, this is a code heavy post. To see a modified version of this in a productionized form you can visit [aiaggregator.com](http://aiaggregator.com/)*
-
 In my [last post](https://alexanderozkan.com/Sentiment-Analysis-as-a-Trading-Indicator/), we looked at using the sentiment of financial news as an indicator for stock trading. The method used was VADER, an out of the box sentiment analysis method that does not rely on machine learning and is simply a pre-weighted lexicon.
 
 As previously discussed, we can improve upon the techniques used in that post.
